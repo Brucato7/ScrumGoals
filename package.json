@@ -1,0 +1,27 @@
+{
+  "name": "scrum_goals",
+  "version": "1.0.0",
+  "description": "Scrum Goal manager project for dCC",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Brucato7/ScrumGoals.git"
+  },
+  "keywords": [
+    "Scrum"
+  ],
+  "author": "Jon Weisse",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Brucato7/ScrumGoals/issues"
+  },
+  "homepage": "https://github.com/Brucato7/ScrumGoals#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "pg": "^6.0.2"
+  }
+}
