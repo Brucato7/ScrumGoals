@@ -11,11 +11,13 @@
 		$scope.newTeamError = '';
 		$scope.teamError = '';
 		$scope.newTeamName = '';
+		$scope.userTeamId = '';
 		$scope.showTeam = function(){ return showFields.showTeam;};
 		$scope.showTeamLogin = function(){ return showFields.showTeamLogin;};
 		$scope.showTeamRegister = function(){ return showFields.showTeamRegister;};
 		$scope.userID = userData.userID;
 		$scope.username = function(){ return userData.username;};
+		$scope.userTeams = function(){ return userData.userTeams;};
 
 		$scope.checkTeamName = function(){
 			$scope.newTeamError = '';
@@ -54,6 +56,10 @@
 					console.log(error);
 				})
 		}
+
+		$scope.fake = function(){
+			console.log($scope.userTeamId);
+		};
 		
 	});
 
@@ -115,13 +121,40 @@
 				} else {
 					userData.username = $scope.username;
 					userData.userID = data.data.rows[0].id;
+					$scope.findUserTeams(userData.userID);
 					showFields.showEntrance = false;
 					showFields.showTeam = true;
 					showFields.showTeamLogin = true;
 				}
-			}, function(error){
+			}, function errorCallback(error){
 				console.log(error);
 			});
+		};
+
+		$scope.findUserTeams = function(userID){
+			$http({
+				method: 'GET',
+				url: '/userTeams',
+				params: {userID: userID}
+			}).then(function successCallback(data){
+				for(var i = 0; i < data.data.rows.length; i++){
+					$scope.findTeam(data.data.rows[i].team_id);
+				}
+			}, function errorCallback(error){
+				console.log(error);
+			})
+		};
+
+		$scope.findTeam = function(teamID){
+			$http({
+				method: 'GET',
+				url: '/team',
+				params: {teamID: teamID}
+			}).then(function successCallback(data){
+				userData.userTeams.push(data.data.rows[0]);
+			}, function errorCallback(error){
+				console.log(error);
+			})
 		};
 
 	});
@@ -139,4 +172,5 @@
 		this.userID = '';
 		this.teamName = '';
 		this.teamID = '';
+		this.userTeams = [];
 	});

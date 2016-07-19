@@ -28,5 +28,15 @@ app.route('/teamCreate')
 
 app.route('/teamJoin')
 	.get(function(request, response){
-		database.findTeam(request.query.teamName, function(result){ return response.send(result);});
+		database.findTeamByName(request.query.teamName, function(result){ return response.send(result);});
+	});
+
+app.route('/userTeams')
+	.get(function(request, response){
+		database.findUserTeams(request.query.userID, function(result){ return response.send(result);});
+	});
+
+app.route('/team')
+	.get(function(request, response){
+		database.findTeamById(request.query.teamID, function(result){ return response.send(result);});
 	});

@@ -108,10 +108,9 @@
 		            <div class="col-sm-offset-1 col-sm-4 text-center">
 		            	<h3>Your teams</h3>
 						<p>Scrum me up Scotty!</p>
-						<form class="form-inline" ng-submit="#">
-		                    <select class="form-control" id="person2">
-								<option>Cloud</option>
-								<option>Tifa</option>
+						<form class="form-inline" ng-submit="fake()">
+		                    <select class="form-control" id="userTeams" ng-model="userTeamId">
+								<option ng-repeat="team in userTeams()" value="{{team}}">{{team.name}}</option>
 							</select>
 		                    <br>
 		                    <input class="btn btn-default" type="submit" value="Enter">
