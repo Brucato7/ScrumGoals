@@ -8,18 +8,53 @@
 	});
 
 	app.controller('teamCtrl', function($scope, $http, showFields, userData){
+		$scope.newTeamError = '';
+		$scope.teamError = '';
+		$scope.newTeamName = '';
 		$scope.showTeam = function(){ return showFields.showTeam;};
-		// $scope.joinTeam = function(){
-		// 	$http({
-		// 		method: 'GET',
-		// 		url: '/register',
-		// 		params: {username: userData.username, password: userData.password, teamName: $scope.teamName}
-		// 	}).then(function successCallback(data){
-		// 		console.log(data);
-		// 	}, function errorCallback(error){
-		// 		console.error(error);
-		// 	});
-		// };
+		$scope.showTeamLogin = function(){ return showFields.showTeamLogin;};
+		$scope.showTeamRegister = function(){ return showFields.showTeamRegister;};
+		$scope.userID = userData.userID;
+		$scope.username = function(){ return userData.username;};
+
+		$scope.checkTeamName = function(){
+			$scope.newTeamError = '';
+			if($scope.newTeamName.length < 3){
+				$scope.newTeamError = "Team names must be at least 3 characters.";
+			}else {
+				$http({
+					method: 'GET',
+					url: '/teamCreate',
+					params: {teamName: $scope.newTeamName}
+				}).then(function successCallback(data){
+					if(data.data.err != undefined){
+						$scope.newTeamError = data.data.err;
+					} else {
+						console.log(data);
+					}
+				}, function errorCallback(error){
+					console.log(error);
+				})
+			}
+		};
+
+		$scope.joinTeam = function(){
+			$scope.teamError = '';
+			$http({
+					method: 'GET',
+					url: '/teamJoin',
+					params: {teamName: $scope.teamName}
+				}).then(function successCallback(data){
+					if(data.data.err != undefined){
+						$scope.teamError = data.data.err;
+					} else {
+						console.log(data);
+					}
+				}, function errorCallback(error){
+					console.log(error);
+				})
+		}
+		
 	});
 
 	app.controller('entranceCtrl', function($scope, $http, showFields, userData){
@@ -39,6 +74,7 @@
 				userData.userID = data.data.rows[0].id;
 				showFields.showEntrance = false;
 				showFields.showTeam = true;
+				showFields.showTeamRegister = true;
 			}, function errorCallback(error){
 				console.log("The Error of POST is firing...");
 			})
@@ -77,7 +113,11 @@
 				if(data.data.err != undefined){
 					$scope.loginError = data.data.err;	
 				} else {
-					console.log(data.data);
+					userData.username = $scope.username;
+					userData.userID = data.data.rows[0].id;
+					showFields.showEntrance = false;
+					showFields.showTeam = true;
+					showFields.showTeamLogin = true;
 				}
 			}, function(error){
 				console.log(error);
@@ -90,6 +130,8 @@
 		this.showEntrance = true;
 		this.showTeam = false;
 		this.showGoals = false;
+		this.showTeamLogin = false;
+		this.showTeamRegister = false;
 	});
 
 	app.service('userData', function(){

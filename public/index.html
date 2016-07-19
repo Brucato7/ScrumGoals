@@ -36,7 +36,7 @@
 		            <div class="col-sm-2">
 		            </div>
 
-		            <div class="col-sm-5">
+		            <div class="col-sm-5 text-right">
 						<h2>Register</h2>
 						<p>To Scrumming and Beyond!</p>
 						<span class="text-danger">{{registerError}}</span>
@@ -53,17 +53,19 @@
 		</div>
 	</div>
 
-	<div class="container" ng-controller="teamCtrl" ng-show="showTeam()">.
-		<div class="row">
+	<div class="container" ng-controller="teamCtrl" ng-show="showTeam()">
+
+		<div class="row" ng-show="showTeamRegister()">
 			<div class="col-sm-offset-2 col-sm-8">
-				<h2 class="text-center">Thanks for Registering!</h2>
+				<h2 class="text-center">Thanks for Registering, <span>{{username()}}</span>!</h2>
 				<div class="row">
 
 					<div class="col-sm-5">
-						<h3>Join your team</h3>
+						<h3>Join a team</h3>
 						<p>All for scrum and scrum for all!</p>
+						<span class="text-danger">{{teamError}}</span>
 						<form class="form-inline" ng-submit="joinTeam()">
-		                    <input class="form-control" type="text" ng-model="teamName" placeholder="Username">
+		                    <input class="form-control" type="text" ng-model="teamName" placeholder="Team Name">
 		                    <br>
 		                    <input class="btn btn-default" type="submit" value="Join">
 		                </form>
@@ -72,11 +74,12 @@
 		            <div class="col-sm-2">
 		            </div>
 
-		            <div class="col-sm-5">
-						<h3>Create your team</h3>
+		            <div class="col-sm-5 text-right">
+						<h3>Create a team</h3>
 						<p>Scrum one scrum all!</p>
-						<form class="form-inline" ng-submit="#">
-		                    <input class="form-control" type="text" ng-model="newTeamName" placeholder="Username">
+						<span class="text-danger">{{newTeamError}}</span>
+						<form class="form-inline" ng-submit="checkTeamName()">
+		                    <input class="form-control" type="text" ng-model="newTeamName" placeholder="Team Name">
 		                    <br>
 		                    <input class="btn btn-default" type="submit" value="Create">
 		                </form>
@@ -85,6 +88,51 @@
 		        </div>
 		    </div>
 		</div>
+
+		<div class="row" ng-show="showTeamLogin()">
+			<div class="col-sm-offset-1 col-sm-10">
+				<h2 class="text-center">Welcome Back <span>{{username()}}</span>!</h2>
+				<div class="row">
+
+					<div class="col-sm-3">
+						<h3>Join a team</h3>
+						<p>All for scrum and scrum for all!</p>
+						<span class="text-danger">{{teamError}}</span>
+						<form class="form-inline" ng-submit="joinTeam()">
+		                    <input class="form-control" type="text" ng-model="teamName" placeholder="Team Name">
+		                    <br>
+		                    <input class="btn btn-default" type="submit" value="Join">
+		                </form>
+		            </div>
+
+		            <div class="col-sm-offset-1 col-sm-4 text-center">
+		            	<h3>Your teams</h3>
+						<p>Scrum me up Scotty!</p>
+						<form class="form-inline" ng-submit="#">
+		                    <select class="form-control" id="person2">
+								<option>Cloud</option>
+								<option>Tifa</option>
+							</select>
+		                    <br>
+		                    <input class="btn btn-default" type="submit" value="Enter">
+		                </form>
+		            </div>
+
+		            <div class="col-sm-offset-1 col-sm-3 text-right">
+						<h3>Create a new team</h3>
+						<p>Scrum one scrum all!</p>
+						<span class="text-danger">{{newTeamError}}</span>
+						<form class="form-inline" ng-submit="checkTeamName()">
+		                    <input class="form-control" type="text" ng-model="newTeamName" placeholder="Team Name">
+		                    <br>
+		                    <input class="btn btn-default" type="submit" value="Create">
+		                </form>
+		            </div>
+
+		        </div>
+		    </div>
+		</div>
+
 	</div>
 
 	<div class="container text-center" ng-controller="goalsCtrl" ng-show="showGoals()">

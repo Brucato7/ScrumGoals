@@ -8,14 +8,25 @@ app.listen(3000,function(){
 	console.log("listening on port", 3000);
 });
 
-app.get('/register', function(request, response){
-	database.findPersonByUsername(request.query.username, function(result){ return response.send(result);});
-});
+app.route('/register')
+	.get(function(request, response){
+		database.findPersonByUsername(request.query.username, function(result){ return response.send(result);});
+	})
+	.post(function(request, response){
+		database.createPerson(request.query.username, request.query.password, function(result){ return response.send(result);});
+	});
 
-app.post('/register', function(request, response){
-	database.createPerson(request.query.username, request.query.password, function(result){ return response.send(result);});
-});
+app.route('/login')
+	.get(function(request,response){
+		database.verifyPerson(request.query.username, request.query.password, function(result){ response.send(result);});
+	});
 
-app.get('/login', function(request,response){
-	database.verifyUsername(request.query.username, request.query.password, function(result){ response.send(result);});
-});
+app.route('/teamCreate')
+	.get(function(request, response){
+		database.checkTeamName(request.query.teamName, function(result){ return response.send(result);});
+	});
+
+app.route('/teamJoin')
+	.get(function(request, response){
+		database.findTeam(request.query.teamName, function(result){ return response.send(result);});
+	});
