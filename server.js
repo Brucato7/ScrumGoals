@@ -40,3 +40,15 @@ app.route('/team')
 	.get(function(request, response){
 		database.findTeamById(request.query.teamID, function(result){ return response.send(result);});
 	});
+
+app.route('/userTeam')
+	.get(function(request, response){
+		database.checkUserTeam(request.query.person_id, request.query.team_id, function(result){
+			return response.send(result);
+		})
+	})
+	.post(function(request, response){
+		database.createUserTeam(request.query.person_id, request.query.team_id, request.query.boolean, function(result){
+			return response.send(result);
+		})
+	});

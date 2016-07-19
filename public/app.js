@@ -15,7 +15,7 @@
 		$scope.showTeam = function(){ return showFields.showTeam;};
 		$scope.showTeamLogin = function(){ return showFields.showTeamLogin;};
 		$scope.showTeamRegister = function(){ return showFields.showTeamRegister;};
-		$scope.userID = userData.userID;
+		$scope.userID = function(){ return userData.userID;};
 		$scope.username = function(){ return userData.username;};
 		$scope.userTeams = function(){ return userData.userTeams;};
 
@@ -32,7 +32,7 @@
 					if(data.data.err != undefined){
 						$scope.newTeamError = data.data.err;
 					} else {
-						console.log(data);
+						$scope.createUserTeam($scope.userID(), data.data.rows[0].id, true);
 					}
 				}, function errorCallback(error){
 					console.log(error);
@@ -50,15 +50,39 @@
 					if(data.data.err != undefined){
 						$scope.teamError = data.data.err;
 					} else {
-						console.log(data);
+						$scope.checkUserTeam(data.data.rows[0].id);
 					}
 				}, function errorCallback(error){
 					console.log(error);
 				})
 		}
 
-		$scope.fake = function(){
-			console.log($scope.userTeamId);
+		$scope.checkUserTeam = function(team_id){
+			$http({
+				method: 'GET',
+				url: '/userTeam',
+				params: {person_id: $scope.userID(), team_id: team_id}
+			}).then(function successCallback(data){
+				if(data.data.err != undefined){
+					$scope.teamError = data.data.err;
+				} else {
+					$scope.createUserTeam($scope.userID(), team_id, false);
+				}
+			}, function errorCallback(error){
+				console.log(error);
+			})
+		};
+
+		$scope.createUserTeam = function(person_id, team_id, boolean){
+			$http({
+				method: 'POST',
+				url: '/userTeam',
+				params: {person_id: person_id, team_id: team_id, boolean: boolean}
+			}).then(function successCallback(data){
+				console.log(data);
+			}, function errorCallback(error){
+				console.log(error);
+			})
 		};
 		
 	});
