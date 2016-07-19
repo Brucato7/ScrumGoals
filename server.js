@@ -9,5 +9,13 @@ app.listen(3000,function(){
 });
 
 app.get('/register', function(request, response){
-	database.readTeam(request.query.teamName, database.partialCreatePerson(request.query.username, request.query.password));
+	database.findPersonByUsername(request.query.username, function(result){ return response.send(result);});
+});
+
+app.post('/register', function(request, response){
+	database.createPerson(request.query.username, request.query.password, function(result){ return response.send(result);});
+});
+
+app.get('/login', function(request,response){
+	database.verifyUsername(request.query.username, request.query.password, function(result){ response.send(result);});
 });
