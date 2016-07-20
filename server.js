@@ -86,4 +86,19 @@ app.route('/tasks')
 		database.getTeamTasks(request.query.team_id, function(result){
 			response.send(result);
 		});
+	})
+	.post(function(request, response){
+		database.createTask(request.query.goal, request.query.person_id, request.query.team_id, request.query.complete,
+			function(result){
+				response.send(result);
+			})
+	});
+
+app.route('/admin')
+	.get(function(request, response){
+		database.getAdminFromUserTeam(request.query.person_id, request.query.team_id,
+			function(result){
+				response.send(result);
+			}
+		)
 	});

@@ -7,6 +7,23 @@
 		$scope.teamId = function(){return teamData.teamID;};
 		$scope.teamGoals = function(){ return teamData.teamGoals;};
 		$scope.teamMembers = function(){ return teamData.teamMembers;};
+		$scope.adminView = function(){ return showFields.adminView;};
+		$scope.userView = function(){ return showFields.userView;};
+		$scope.newGoal = '';
+
+		$scope.addGoal = function(){
+			$http({
+				method: 'POST',
+				url: '/tasks',
+				params: {goal: $scope.newGoal, person_id: userData.userID, team_id: teamData.teamID, complete: false}
+			}).then(function successCallback(data){
+				teamData.teamGoals.push(data.data.rows[0]);
+				$scope.newGoal = '';
+			}, function errorCallback(error){
+				console.log(error);
+			})
+			
+		}
 	});
 
 	app.controller('teamCtrl', function($scope, $http, showFields, userData, teamData){
@@ -88,6 +105,11 @@
 				showFields.showGoals = true;
 				$scope.getTeamMembers();
 				$scope.getTeamTasks();
+				if(data.data.rows[0].administrator){
+					showFields.adminView = true;
+				} else {
+					showFields.userView = true;
+				}
 			}, function errorCallback(error){
 				console.log(error);
 			})
@@ -96,10 +118,24 @@
 		$scope.getTeamFromDropdown = function(){
 			teamData.teamName = $("option[value="+$scope.userTeamId+"]").text();
 			teamData.teamID = $scope.userTeamId;
-			showFields.showTeam = false;
-			showFields.showGoals = true;
-			$scope.getTeamMembers();
-			$scope.getTeamTasks();
+			$http({
+				method: 'GET',
+				url: '/admin',
+				params: {person_id: userData.userID, team_id: teamData.teamID}
+			}).then(function successCallback(data){
+				if(data.data.rows[0].administrator){
+					showFields.adminView = true;
+				} else {
+					showFields.userView = true;
+				}
+				showFields.showTeam = false;
+				showFields.showGoals = true;
+				$scope.getTeamMembers();
+				$scope.getTeamTasks();
+			}, function errorCallback(error){
+				console.log(error);
+			})
+			
 		}
 
 		$scope.getTeamMembers = function(){
@@ -246,6 +282,8 @@
 		this.showGoals = false;
 		this.showTeamLogin = false;
 		this.showTeamRegister = false;
+		this.adminView = false;
+		this.userView = false;
 	});
 
 	app.service('userData', function(){

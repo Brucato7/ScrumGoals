@@ -136,28 +136,58 @@
 
 	<div class="container text-center" ng-controller="goalsCtrl" ng-show="showGoals()">
 		<h2><span>{{teamName()}}</span>'s Goals</h2>
-		<div class="row">
+		<ul>
+			<li ng-repeat="goal in teamGoals()">{{goal}}</li>
+		</ul>
 
+		<div class="row" ng-show="adminView()">
 			<div class="col-sm-offset-2 col-sm-8">
 				<form class="form-inline">
 					<div class="row">
-						<div class="col-sm-offset-2 col-sm-8">
+						<div class="col-sm-offset-2 col-sm-8">								
 							<div ng-repeat="goal in teamGoals()">
 								<label for={{goal.id}}>{{goal.goal}}</label>
-								<select class="form-control" id={{goal.id}}>
+								<select class="form-control" id="goal{{goal.id}}">
 									<option ng-repeat="member in teamMembers()" value={{member.id}}>{{member.username}}</option>
 								</select>
 								<hr>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">
+									<button class="btn btn-default" ng-click="#">Save</button>
+								</div>
+								<div class="col-sm-offset-2 col-sm-8">
+									<button class="btn btn-default" ng-click="addGoal()">Add Goal</button>
+									<input class="form-control" ng-model="newGoal" type="text" placeholder="Add new goal">
+								</div>
 							</div>
 						</div>
 					</div>
 				</form>
 			</div>
 		</div>
+
+		<div class="row" ng-show="userView()">
+			<div class="col-sm-offset-2 col-sm-8">
+				<div class="row">
+					<div class="col-sm-3 userTasks" ng-repeat="member in teamMembers()">
+						<h3>{{member.username}}</h3>
+						<p ng-repeat="goal in teamGoals() | filter:{person_id:member.id} | filter:{completed:false}">{{goal.goal}}</p>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 
-
+	<style>
+		.userTasks{
+			background-color:#ccc;
+			min-height: 200px;
+			border: 5px solid black;
+			margin: 5px 5px;
+		}
+	</style>
 
 
 
