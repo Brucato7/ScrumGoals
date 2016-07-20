@@ -108,9 +108,9 @@
 		            <div class="col-sm-offset-1 col-sm-4 text-center">
 		            	<h3>Your teams</h3>
 						<p>Scrum me up Scotty!</p>
-						<form class="form-inline" ng-submit="fake()">
+						<form class="form-inline" ng-submit="getTeamFromDropdown()">
 		                    <select class="form-control" id="userTeams" ng-model="userTeamId">
-								<option ng-repeat="team in userTeams()" value="{{team}}">{{team.name}}</option>
+								<option ng-repeat="team in userTeams()" value={{team.id}}>{{team.name}}</option>
 							</select>
 		                    <br>
 		                    <input class="btn btn-default" type="submit" value="Enter">
@@ -135,24 +135,20 @@
 	</div>
 
 	<div class="container text-center" ng-controller="goalsCtrl" ng-show="showGoals()">
-		<h2>Team's Goals</h2>
+		<h2><span>{{teamName()}}</span>'s Goals</h2>
 		<div class="row">
 
 			<div class="col-sm-offset-2 col-sm-8">
 				<form class="form-inline">
 					<div class="row">
 						<div class="col-sm-offset-2 col-sm-8">
-							<label for='person1'>Defeat Sephiroth:</label>
-							<select class="form-control" id="person1">
-								<option>Cloud</option>
-								<option>Tifa</option>
-							</select>
-							<hr>
-							<label for='person2'>Ride Chocobos:</label>
-							<select class="form-control" id="person2">
-								<option>Cloud</option>
-								<option>Tifa</option>
-							</select>
+							<div ng-repeat="goal in teamGoals()">
+								<label for={{goal.id}}>{{goal.goal}}</label>
+								<select class="form-control" id={{goal.id}}>
+									<option ng-repeat="member in teamMembers()" value={{member.id}}>{{member.username}}</option>
+								</select>
+								<hr>
+							</div>
 						</div>
 					</div>
 				</form>

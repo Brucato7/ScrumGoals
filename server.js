@@ -10,45 +10,80 @@ app.listen(3000,function(){
 
 app.route('/register')
 	.get(function(request, response){
-		database.findPersonByUsername(request.query.username, function(result){ return response.send(result);});
+		database.findPersonByUsername(request.query.username, function(result){
+			response.send(result);
+		});
 	})
 	.post(function(request, response){
-		database.createPerson(request.query.username, request.query.password, function(result){ return response.send(result);});
+		database.createPerson(request.query.username, request.query.password, function(result){
+			response.send(result);
+		});
 	});
 
 app.route('/login')
 	.get(function(request,response){
-		database.verifyPerson(request.query.username, request.query.password, function(result){ response.send(result);});
+		database.verifyPerson(request.query.username, request.query.password, function(result){
+			response.send(result);
+		});
 	});
 
 app.route('/teamCreate')
 	.get(function(request, response){
-		database.checkTeamName(request.query.teamName, function(result){ return response.send(result);});
+		database.checkTeamName(request.query.teamName, function(result){
+			response.send(result);
+		});
 	});
 
 app.route('/teamJoin')
 	.get(function(request, response){
-		database.findTeamByName(request.query.teamName, function(result){ return response.send(result);});
+		database.findTeamByName(request.query.teamName, function(result){
+			response.send(result);
+		});
 	});
 
 app.route('/userTeams')
 	.get(function(request, response){
-		database.findUserTeams(request.query.userID, function(result){ return response.send(result);});
+		database.findUserTeams(request.query.userID, function(result){
+			response.send(result);
+		});
 	});
 
 app.route('/team')
 	.get(function(request, response){
-		database.findTeamById(request.query.teamID, function(result){ return response.send(result);});
+		database.findTeamById(request.query.teamID, function(result){
+			response.send(result);
+		});
 	});
 
 app.route('/userTeam')
 	.get(function(request, response){
 		database.checkUserTeam(request.query.person_id, request.query.team_id, function(result){
-			return response.send(result);
-		})
+			response.send(result);
+		});
 	})
 	.post(function(request, response){
 		database.createUserTeam(request.query.person_id, request.query.team_id, request.query.boolean, function(result){
-			return response.send(result);
-		})
+			response.send(result);
+		});
+	});
+
+app.route('/teamMembers')
+	.get(function(request, response){
+		database.findUsersByTeamId(request.query.team_id, function(result){
+			response.send(result);
+		});
+	});
+
+app.route('/user')
+	.get(function(request, response){
+		database.findPersonById(request.query.id, function(result){
+			response.send(result);
+		});
+	});
+
+app.route('/tasks')
+	.get(function(request, response){
+		database.getTeamTasks(request.query.team_id, function(result){
+			response.send(result);
+		});
 	});

@@ -1,13 +1,15 @@
 "use strict";
 	var app = angular.module('scrumApp', []);
 
-	app.controller('goalsCtrl', function($scope, $http, showFields, userData){
+	app.controller('goalsCtrl', function($scope, $http, showFields, userData, teamData){
 		$scope.showGoals = function(){return showFields.showGoals;};
-		$scope.teamGoals = [];
-		$scope.teamMembers = [];
+		$scope.teamName = function(){return teamData.teamName;};
+		$scope.teamId = function(){return teamData.teamID;};
+		$scope.teamGoals = function(){ return teamData.teamGoals;};
+		$scope.teamMembers = function(){ return teamData.teamMembers;};
 	});
 
-	app.controller('teamCtrl', function($scope, $http, showFields, userData){
+	app.controller('teamCtrl', function($scope, $http, showFields, userData, teamData){
 		$scope.newTeamError = '';
 		$scope.teamError = '';
 		$scope.newTeamName = '';
@@ -32,6 +34,7 @@
 					if(data.data.err != undefined){
 						$scope.newTeamError = data.data.err;
 					} else {
+						teamData.teamName = $scope.newTeamName;
 						$scope.createUserTeam($scope.userID(), data.data.rows[0].id, true);
 					}
 				}, function errorCallback(error){
@@ -50,6 +53,7 @@
 					if(data.data.err != undefined){
 						$scope.teamError = data.data.err;
 					} else {
+						teamData.teamName = $scope.teamName;
 						$scope.checkUserTeam(data.data.rows[0].id);
 					}
 				}, function errorCallback(error){
@@ -79,11 +83,64 @@
 				url: '/userTeam',
 				params: {person_id: person_id, team_id: team_id, boolean: boolean}
 			}).then(function successCallback(data){
-				console.log(data);
+				teamData.teamID = team_id;
+				showFields.showTeam = false;
+				showFields.showGoals = true;
+				$scope.getTeamMembers();
+				$scope.getTeamTasks();
 			}, function errorCallback(error){
 				console.log(error);
 			})
 		};
+
+		$scope.getTeamFromDropdown = function(){
+			teamData.teamName = $("option[value="+$scope.userTeamId+"]").text();
+			teamData.teamID = $scope.userTeamId;
+			showFields.showTeam = false;
+			showFields.showGoals = true;
+			$scope.getTeamMembers();
+			$scope.getTeamTasks();
+		}
+
+		$scope.getTeamMembers = function(){
+			$http({
+				method: 'GET',
+				url: '/teamMembers',
+				params: {team_id: teamData.teamID}
+			}).then(function successCallback(data){
+				for(var i=0; i < data.data.rowCount; i++){
+					$scope.getUserForTeamMembers(data.data.rows[i].person_id);
+				}
+			}, function errorCallback(error){
+				console.log(error);
+			})
+		};
+
+		$scope.getUserForTeamMembers = function(person_id){
+			$http({
+				method: 'GET',
+				url: '/user',
+				params: {id: person_id}
+			}).then(function successCallback(data){
+				teamData.teamMembers.push(data.data.rows[0]);
+			}, function errorCallback(error){
+				console.log(error);
+			})
+		}
+
+		$scope.getTeamTasks = function(){
+			$http({
+				method: 'GET',
+				url: '/tasks',
+				params: {team_id: teamData.teamID}
+			}).then(function successCallback(data){
+				for(var i = 0; i < data.data.rowCount; i++){
+					teamData.teamGoals.push(data.data.rows[i]);
+				}
+			}, function errorCallback(error){
+				console.log(error);
+			})
+		}
 		
 	});
 
@@ -194,7 +251,12 @@
 	app.service('userData', function(){
 		this.username = '';
 		this.userID = '';
-		this.teamName = '';
-		this.teamID = '';
 		this.userTeams = [];
 	});
+
+	app.service('teamData', function(){
+		this.teamID = '';
+		this.teamName = '';
+		this.teamMembers = [];
+		this.teamGoals = [];
+	})
