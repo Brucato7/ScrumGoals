@@ -10,6 +10,8 @@
 		$scope.adminView = function(){ return showFields.adminView;};
 		$scope.userView = function(){ return showFields.userView;};
 		$scope.newGoal = '';
+		$scope.assignedUser = {};
+		$scope.completedTask = {};
 
 		$scope.addGoal = function(){
 			$http({
@@ -22,8 +24,63 @@
 			}, function errorCallback(error){
 				console.log(error);
 			})
-			
 		}
+
+		$scope.saveAdminChanges = function(){
+			var memberId;
+			var complete;
+			var goalId;
+			for(var i = 0; i<teamData.teamGoals.length; i++){
+				goalId = teamData.teamGoals[i].id;
+				if(!(teamData.teamGoals[i].completed)){
+					if($scope.completedTask[goalId] != undefined){
+						complete = true;
+					} else {
+						complete = false;
+					}
+					if($scope.assignedUser[goalId] != undefined){
+						memberId = $scope.assignedUser[goalId].id;
+					} else {
+						memberId = teamData.teamGoals[i].person_id;
+					}
+
+					$http({
+						method: "PUT",
+						url: '/tasks',
+						params: {task_id: goalId, person_id: memberId, complete: complete}
+					}).then(function successCallback(data){
+						
+					}, function errorCallback(error){
+						console.log(error);
+					})
+				}
+			}
+			$scope.getTeamTasks();
+		}
+
+		$scope.getTeamTasks = function(){
+			teamData.teamGoals = [];
+			$http({
+				method: 'GET',
+				url: '/tasks',
+				params: {team_id: teamData.teamID}
+			}).then(function successCallback(data){
+				for(var i = 0; i < data.data.rowCount; i++){
+					if(data.data.rows[i].completed == false){
+						teamData.teamGoals.push(data.data.rows[i]);
+					}
+				}
+			}, function errorCallback(error){
+				console.log(error);
+			})
+		}
+
+		$scope.exitToUserView = function(){
+			showFields.adminView = false;
+			showFields.userView = true;
+			$scope.getTeamTasks();
+		}
+
 	});
 
 	app.controller('teamCtrl', function($scope, $http, showFields, userData, teamData){

@@ -92,6 +92,12 @@ app.route('/tasks')
 			function(result){
 				response.send(result);
 			})
+	})
+	.put(function(request, response){
+		database.updateTask(request.query.task_id, request.query.person_id, request.query.complete,
+			function(result){
+				response.send(result);
+			})
 	});
 
 app.route('/admin')
