@@ -2,3 +2,5 @@
 /database-manager.js
 /node_modules
 /public/css/normalize.css
+/public/angular-mock.js
+/public/angular.min.js
